@@ -6,10 +6,11 @@ The user runs `synapse-reviewer` and is presented with synapses in Neuroglancer
 to rate as true positives or false negatives. There are several keyboard
 commands within Neuroglancer:
 
-- **Y**: yes, it is a synapse
-- **N**: no, it is not a synapse
-- **S**: skip to next synapse
-- **R**: refresh the display
+- **shift+Y**: yes, it is a synapse
+- **shift+N**: no, it is not a synapse
+- **shift+S**: skip to next synapse
+- **shift+B**: go back to the previous synapse
+- **shift+R**: refresh the display
 
 ## Installation
 

@@ -87,6 +87,11 @@ def yes():
 def no():
     write("no")
     skip()
+
+def back():
+    global current_segment_idx
+    current_segment_idx = max(0, current_segment_idx-1)
+    set_viewer_state()
             
 def main():
     global output_file_name
@@ -117,12 +122,14 @@ def main():
     viewer.actions.add("yes", lambda _: yes())
     viewer.actions.add("no", lambda _: no())
     viewer.actions.add("skip", lambda _: skip())
+    viewer.actions.add("back", lambda _: back())
     viewer.actions.add("revert", lambda _: set_viewer_state())
     with viewer.config_state.txn() as s:
-        s.input_event_bindings.viewer['keyy'] = 'yes'
-        s.input_event_bindings.viewer["keyn"] = "no"
-        s.input_event_bindings.viewer["keys"] = "skip"
-        s.input_event_bindings.viewer["keyr"] = "revert"
+        s.input_event_bindings.viewer['shift+keyy'] = 'yes'
+        s.input_event_bindings.viewer["shift+keyn"] = "no"
+        s.input_event_bindings.viewer["shift+keys"] = "skip"
+        s.input_event_bindings.viewer["shift+keyr"] = "revert"
+        s.input_event_bindings.viewer["shift+keyb"] = "back"
     set_viewer_state()
     webbrowser.open_new(viewer.get_viewer_url())
     while True:
