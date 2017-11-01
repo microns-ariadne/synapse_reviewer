@@ -2,16 +2,18 @@ import argparse
 import copy
 import json
 import neuroglancer
+import os
 import sys
 import time
 import webbrowser
 
+DEFAULT_STATIC_CONTENT_SOURCE = "http://localhost:8080"
 DEFAULT_IMAGE_URL = \
-    "ndstore://https://dojo.rc.fas.harvard.edu/R0::2017_09_16::preseg/1_1_1_raw"
+    "ndstore://https://dojo.rc.fas.harvard.edu/R0::2017_08_23::88_88_14/1_1_1_raw"
 DEFAULT_SEGMENTATION_URL = \
-    "ndstore://https://dojo.rc.fas.harvard.edu/R0::2017_09_16::preseg/1_1_1_ids"
+    "ndstore://https://dojo.rc.fas.harvard.edu/R0::2017_08_23::88_88_14/1_1_1_ids"
 DEFAULT_SYNAPSE_FILE = \
-    "/n/coxfs01/leek/results/2017-05-11_R0/synapse-connections.json"
+    "/n/coxfs01/leek/results/2017-08-23_100um_cube/88_88_14/synapse-connections.json"
 
 class Synapse(object):
     def __init__(self, neuron_1, neuron_2, x, y, z):
@@ -28,7 +30,7 @@ def parse_args():
                         help="The webserver's port")
     parser.add_argument(
         "--static-content-source",
-        default="http://localhost:8080",
+        default=DEFAULT_STATIC_CONTENT_SOURCE,
         help="The URL of the webserver serving static content")
     parser.add_argument("--image-url",
                         default=DEFAULT_IMAGE_URL,
@@ -53,7 +55,9 @@ def set_viewer_state():
     viewer_state = copy.deepcopy(viewer.state)
     viewer_state.position.voxel_coordinates = [synapse.x, synapse.y, synapse.z]
     for layer in viewer_state.layers:
-        if isinstance(layer, neuroglancer.SegmentationLayer):
+        if layer.name == "segmentation":
+            if not hasattr(layer, "segments"):
+                layer = layer.layer
             layer.segments.clear()
             layer.segments.add(synapse.neuron_1)
             layer.segments.add(synapse.neuron_2)
@@ -65,14 +69,23 @@ def skip():
     synapse = synapses[current_segment_idx]
     set_viewer_state()
 
-def yes():
+def write(result):
+    if not os.path.exists(output_file_name):
+        with open(output_file_name, "w") as fd:
+            fd.write(
+                '"synapse_id","neuron_1","neuron_2","x","y","z","class"\n')
     with open(output_file_name, "a") as fd:
-        fd.write("%d yes\n" % current_segment_idx)
+        synapse = synapses[current_segment_idx]
+        fd.write('%d,%d,%d,%.1f,%.1f,%.1f,"%s"\n' % 
+                 (current_segment_idx, synapse.neuron_1, synapse.neuron_2,
+                  synapse.x, synapse.y, synapse.z, result))
+    
+def yes():
+    write("yes")
     skip()
 
 def no():
-    with open(output_file_name, "a") as fd:
-        fd.write("%d no\n" % current_segment_idx)
+    write("no")
     skip()
             
 def main():
