@@ -1,5 +1,5 @@
 # synapse_reviewer
-Neuroglancer project to allow a reviewer to classify putative synapses as real or false-negative
+Neuroglancer project to allow a reviewer to classify putative synapses as real or false-positive
 
 This project runs Neuroglancer with Python callbacks to review synapses.
 The user runs `synapse-reviewer` and is presented with synapses in Neuroglancer
