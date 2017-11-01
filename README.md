@@ -36,12 +36,12 @@ application.
 
 Invoke the reader like this:
 
-```synapse-reviewer` \
-     [--port <PORT>] \
-     [--static-content-source <SOURCE>] \
-     [--image-url <IMAGE_URL>] \
-     [--segmentation-url <SEGMENTATION_URL>] \
-     [--synapses <SYNAPSE_CONNECTIONS_FILE>] \
+```synapse-reviewer
+     [--port <PORT>]
+     [--static-content-source <SOURCE>]
+     [--image-url <IMAGE_URL>]
+     [--segmentation-url <SEGMENTATION_URL>]
+     [--synapses <SYNAPSE_CONNECTIONS_FILE>] 
      --output <RESULTS_FILE>
 ```
 where:
